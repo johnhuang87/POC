@@ -1,0 +1,61 @@
+==========
+Args:Namespace(adam_beta1=0.9, adam_beta2=0.999, always_fixbase=False, arch='resnet50', augdata_re=False, base_lr_mult=0.1, cuhk03_classic_split=False, cuhk03_labeled=False, eval_freq=-1, evaluate=True, fixbase_epoch=0, gamma=0.1, gpu_devices='0', height=256, label_smooth=False, lambda_htri=1, lambda_xent=1, load_weights='satudora/sett3/triplet-0003/checkpoint_ep500.pth.tar', lr=0.0003, lr_scheduler='multi_step', margin=0.3, market1501_500k=False, max_epoch=60, momentum=0.9, new_layers=['classifier'], num_instances=4, open_layers=['classifier'], optim='adam', pool_tracklet_features='avg', print_freq=10, resume='', rmsprop_alpha=0.99, root='data', sample_method='evenly', save_dir='satudora/sett3/triplet-0003-test', seed=1, seq_len=15, sgd_dampening=0, sgd_nesterov=False, source_names=['grozi'], split_id=0, staged_lr=False, start_epoch=0, start_eval=0, stepsize=[20, 40], target_names=['grozi'], test_batch_size=100, train_batch_size=32, train_sampler='RandomSampler', use_avai_gpus=False, use_cpu=False, use_metric_cuhk03=False, visualize_ranks=False, weight_decay=0.0005, width=256, workers=4)
+==========
+Currently using CPU, however, GPU is highly recommended
+Initializing image data manager
+=> Initializing TRAIN (source) datasets
+=> GROZI loaded
+Image Dataset statistics:
+  ----------------------------------------
+  subset   | # ids | # images | # cameras
+  ----------------------------------------
+  train    |    10 |       10 |         1
+  query    |     1 |        1 |         1
+  gallery  |    10 |       10 |         1
+  ----------------------------------------
+=> Initializing TEST (target) datasets
+=> GROZI loaded
+Image Dataset statistics:
+  ----------------------------------------
+  subset   | # ids | # images | # cameras
+  ----------------------------------------
+  train    |    10 |       10 |         1
+  query    |     1 |        1 |         1
+  gallery  |    10 |       10 |         1
+  ----------------------------------------
+
+
+  **************** Summary ****************
+  train names      : ['grozi']
+  # train datasets : 1
+  # train ids      : 10
+  # train images   : 10
+  # train cameras  : 1
+  test names       : ['grozi']
+  *****************************************
+
+
+Initializing model: resnet50
+Initialized model with pretrained weights from https://download.pytorch.org/models/resnet50-19c8e357.pth
+Model size: 23.508 M
+Successfully loaded pretrained weights from "satudora/sett3/triplet-0003/checkpoint_ep500.pth.tar"
+Evaluate only
+Evaluating grozi ...
+Extracted features for query set, obtained 1-by-2048 matrix
+Extracted features for query set time:  0.3623991012573242
+Extracted features for gallery set, obtained 10-by-2048 matrix
+Extracted features for query set time:  2.2667479515075684
+=> BatchTime(s)/BatchSize(img): 1.189/100
+[[9 3 6 0 4 7 1 5 8 2]]
+[1 2 3 4 5 6 7 8 9 0]
+Computed time:  0.0024678707122802734
+Computing CMC and mAP
+Note: number of gallery samples is quite small, got 10
+[[9 3 6 0 4 7 1 5 8 2]]
+[1 2 3 4 5 6 7 8 9 0]
+Results ----------
+mAP: 100.0%
+CMC curve
+Rank-1  : 100.0%
+Rank-5  : 100.0%
+------------------
