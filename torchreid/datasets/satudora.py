@@ -2,29 +2,19 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import os
-import glob
-import re
-import sys
-import urllib
-import tarfile
-import zipfile
+
 import os.path as osp
-from scipy.io import loadmat
-import numpy as np
-import h5py
-from scipy.misc import imsave
 import csv
 
 from .bases import BaseImageDataset
 
 
-class GROZI(BaseImageDataset):
+class SATUDORA(BaseImageDataset):
 
-    dataset_dir = 'grozi'
+    dataset_dir = 'satudora'
 
     def __init__(self, root='data', verbose=True, **kwargs):
-        super(GROZI, self).__init__(root)
+        super(SATUDORA, self).__init__(root)
         self.dataset_dir = osp.join(self.root, self.dataset_dir)
         # self.train_dir = osp.join(self.dataset_dir, 'MSMT17_V1/train')
         # self.test_dir = osp.join(self.dataset_dir, 'MSMT17_V1/test')
@@ -42,11 +32,9 @@ class GROZI(BaseImageDataset):
         query = self._create_dataset(self.csv_query_path,1)
         gallery = self._create_dataset(self.csv_gallery_path,2)
 
-        #train += val
-        #num_train_imgs += num_val_imgs
 
         if verbose:
-            print("=> GROZI loaded")
+            print("=> SATUDORA loaded")
             self.print_dataset_statistics(train, query, gallery)
 
         self.train = train

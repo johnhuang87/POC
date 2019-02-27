@@ -9,9 +9,9 @@ def argument_parser():
     # ************************************************************
     parser.add_argument('--root', type=str, default='data',
                         help='root path to data directory')
-    parser.add_argument('-s', '--source-names', type=str,  default=['grozi'], nargs='+',
+    parser.add_argument('-s', '--source-names', type=str,  default=['satudora'], nargs='+',
                         help='source datasets (delimited by space)')
-    parser.add_argument('-t', '--target-names', type=str,  default=['grozi'], nargs='+',
+    parser.add_argument('-t', '--target-names', type=str,  default=['satudora'], nargs='+',
                         help='target datasets (delimited by space)')
     parser.add_argument('-j', '--workers', default=4, type=int,
                         help='number of data loading workers (tips: 4 or 8 times number of gpus)')
