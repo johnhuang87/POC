@@ -89,12 +89,12 @@ def test(model, queryloader, galleryloader, use_gpu, ranks=[1, 5], return_distma
         ])  
         img_tensor = transform_test(img) 
         img_tensor = img_tensor.unsqueeze(0)     
-        print(img_tensor.shape)
         qf, q_pids = [], []
         features = model(img_tensor)
         features = features.data.cpu()
         qf.append(features)
         qf = torch.cat(qf, 0)
+
         # q_pids.extend(6)
         # q_pids = np.asarray(q_pids)
 
