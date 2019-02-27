@@ -9,16 +9,16 @@ def argument_parser():
     # ************************************************************
     parser.add_argument('--root', type=str, default='data',
                         help='root path to data directory')
-    parser.add_argument('-s', '--source-names', type=str, required=True, nargs='+',
+    parser.add_argument('-s', '--source-names', type=str,  default=['grozi'], nargs='+',
                         help='source datasets (delimited by space)')
-    parser.add_argument('-t', '--target-names', type=str, required=True, nargs='+',
+    parser.add_argument('-t', '--target-names', type=str,  default=['grozi'], nargs='+',
                         help='target datasets (delimited by space)')
     parser.add_argument('-j', '--workers', default=4, type=int,
                         help='number of data loading workers (tips: 4 or 8 times number of gpus)')
-    parser.add_argument('--height', type=int, default=256,
-                        help='height of an image')
-    parser.add_argument('--width', type=int, default=128,
-                        help='width of an image')
+    # parser.add_argument('--height', type=int, default=256,
+    #                     help='height of an image')
+    # parser.add_argument('--width', type=int, default=128,
+    #                     help='width of an image')
     parser.add_argument('--split-id', type=int, default=0,
                         help='split index (note: 0-based)')
     parser.add_argument('--train-sampler', type=str, default='RandomSampler',
@@ -179,8 +179,8 @@ def image_dataset_kwargs(parsed_args):
         'target_names': parsed_args.target_names,
         'root': parsed_args.root,
         'split_id': parsed_args.split_id,
-        'height': parsed_args.height,
-        'width': parsed_args.width,
+        # 'height': parsed_args.height,
+        # 'width': parsed_args.width,
         'train_batch_size': parsed_args.train_batch_size,
         'test_batch_size': parsed_args.test_batch_size,
         'workers': parsed_args.workers,
@@ -193,57 +193,5 @@ def image_dataset_kwargs(parsed_args):
     }
 
 
-def video_dataset_kwargs(parsed_args):
-    """
-    Build kwargs for VideoDataManager in data_manager.py from
-    the parsed command-line arguments.
-    """
-    return {
-        'source_names': parsed_args.source_names,
-        'target_names': parsed_args.target_names,
-        'root': parsed_args.root,
-        'split_id': parsed_args.split_id,
-        'height': parsed_args.height,
-        'width': parsed_args.width,
-        'train_batch_size': parsed_args.train_batch_size,
-        'test_batch_size': parsed_args.test_batch_size,
-        'workers': parsed_args.workers,
-        'train_sampler': parsed_args.train_sampler,
-        'num_instances': parsed_args.num_instances,
-        'seq_len': parsed_args.seq_len,
-        'sample_method': parsed_args.sample_method,
-        'augdata_re': parsed_args.augdata_re,
-    }
 
 
-def optimizer_kwargs(parsed_args):
-    """
-    Build kwargs for optimizer in optimizers.py from
-    the parsed command-line arguments.
-    """
-    return {
-        'optim': parsed_args.optim,
-        'lr': parsed_args.lr,
-        'weight_decay': parsed_args.weight_decay,
-        'momentum': parsed_args.momentum,
-        'sgd_dampening': parsed_args.sgd_dampening,
-        'sgd_nesterov': parsed_args.sgd_nesterov,
-        'rmsprop_alpha': parsed_args.rmsprop_alpha,
-        'adam_beta1': parsed_args.adam_beta1,
-        'adam_beta2': parsed_args.adam_beta2,
-        'staged_lr': parsed_args.staged_lr,
-        'new_layers': parsed_args.new_layers,
-        'base_lr_mult': parsed_args.base_lr_mult,
-    }
-
-
-def lr_scheduler_kwargs(parsed_args):
-    """
-    Build kwargs for lr_scheduler in lr_schedulers.py from
-    the parsed command-line arguments.
-    """
-    return {
-        'lr_scheduler': parsed_args.lr_scheduler,
-        'stepsize': parsed_args.stepsize,
-        'gamma': parsed_args.gamma,
-    }

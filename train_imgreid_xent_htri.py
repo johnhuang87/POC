@@ -2,48 +2,29 @@ from __future__ import print_function
 from __future__ import division
 
 import os
-import sys
-import time
-import datetime
-import os.path as osp
+
 import numpy as np
 
 import torch
 import torch.nn as nn
 import torch.backends.cudnn as cudnn
-from torchvision import transforms
 from torchvision.transforms import *
-from args import argument_parser, image_dataset_kwargs, optimizer_kwargs, lr_scheduler_kwargs
+from args import argument_parser, image_dataset_kwargs
 from torchreid.data_manager import ImageDataManager
 from torchreid import models
-#from torchreid.losses import CrossEntropyLoss, TripletLoss, DeepSupervision
-from torchreid.utils.iotools import save_checkpoint, check_isfile
-from torchreid.utils.avgmeter import AverageMeter
-#from torchreid.utils.loggers import Logger, RankLogger
-from torchreid.utils.torchtools import count_num_param, open_all_layers, open_specified_layers, accuracy, load_pretrained_weights
-# from torchreid.utils.reidtools import visualize_ranked_results
-# from torchreid.utils.generaltools import set_random_seed
-from torchreid.eval_metrics import evaluate
-# from torchreid.samplers import RandomIdentitySampler
-#from torchreid.optimizers import init_optimizer
-# from torchreid.lr_schedulers import init_lr_scheduler
+from torchreid.utils.iotools import check_isfile
+from torchreid.utils.torchtools import count_num_param,load_pretrained_weights
 from torchreid.dataset_loader import read_image
 
 # global variables
 parser = argument_parser()
 args = parser.parse_args()
 
-
+        
 def main():
-    global args
-    
-    #set_random_seed(args.seed)
+
     if not args.use_avai_gpus: os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu_devices
     use_gpu = torch.cuda.is_available()
-    #if args.use_cpu: use_gpu = False
-    #log_name = 'log_test.txt' if args.evaluate else 'log_train.txt'
-    #sys.stdout = Logger(osp.join(args.save_dir, log_name))
-    print('==========\nArgs:{}\n=========='.format(args))
 
     if use_gpu:
         print('Currently using GPU {}'.format(args.gpu_devices))
@@ -51,14 +32,10 @@ def main():
     else:
         print('Currently using CPU, however, GPU is highly recommended')
 
-    print('Initializing image data manager')
     dm = ImageDataManager(use_gpu, **image_dataset_kwargs(args))
-    trainloader, testloader_dict = dm.return_dataloaders()
+    _, testloader_dict = dm.return_dataloaders()
 
-    print('Initializing model: {}'.format(args.arch))
     model = models.init_model(name=args.arch, num_classes=dm.num_train_pids, loss={'xent', 'htri'})
-    print('Model size: {:.3f} M'.format(count_num_param(model)))
-
     # Load model here
     model_link = "data/sett2/checkpoint_ep1000.pth.tar"
     if check_isfile(model_link):
@@ -67,12 +44,10 @@ def main():
     model = nn.DataParallel(model).cuda() if use_gpu else model
 
     dataset_name = "grozi"
-    queryloader = testloader_dict[dataset_name]['query']
     galleryloader = testloader_dict[dataset_name]['gallery']
-    test(model, queryloader, galleryloader, use_gpu, return_distmat=True)
+    test(model, galleryloader, use_gpu)
 
-def test(model, queryloader, galleryloader, use_gpu, ranks=[1, 5], return_distmat=False):
-    #batch_time = AverageMeter()
+def test(model, galleryloader, use_gpu):
 
     model.eval()
 
@@ -94,26 +69,6 @@ def test(model, queryloader, galleryloader, use_gpu, ranks=[1, 5], return_distma
         features = features.data.cpu()
         qf.append(features)
         qf = torch.cat(qf, 0)
-
-        # q_pids.extend(6)
-        # q_pids = np.asarray(q_pids)
-
-
-        # qf, q_pids = [], []
-        # for batch_idx, (imgs, pids, camids, path) in enumerate(queryloader):
-        #     print(imgs.shape)
-        #     if use_gpu:
-        #         imgs = imgs.cuda()
-            
-        #     features = model(imgs)
-
-        #     features = features.data.cpu()
-        #     qf.append(features)
-        #     q_pids.extend(pids)
-        # qf = torch.cat(qf, 0)
-        # q_pids = np.asarray(q_pids)
-        # print("q_pids")
-        # print(q_pids)
         
         print('Extracted features for query set, obtained {}-by-{} matrix'.format(qf.size(0), qf.size(1)))
 
@@ -146,16 +101,6 @@ def test(model, queryloader, galleryloader, use_gpu, ranks=[1, 5], return_distma
     for i in top_5_index:
         top_5.append(g_pids[i])
     print(top_5)
-    # print('Computing CMC and mAP')
-    # cmc, mAP = evaluate(distmat, q_pids, g_pids, q_camids, g_camids, use_metric_cuhk03=args.use_metric_cuhk03)
 
-    # print('Results ----------')
-    # print('mAP: {:.1%}'.format(mAP))
-    # print('CMC curve')
-    # for r in ranks:
-    #     print('Rank-{:<3}: {:.1%}'.format(r, cmc[r-1]))
-    # print('------------------')
-
- 
 if __name__ == '__main__':
     main()
